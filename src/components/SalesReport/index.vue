@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import ECharts from 'echarts'
+
 export default {
   data() {
     return {
@@ -38,7 +40,77 @@ export default {
   methods: {
     change(index) {
       this.selectedIndex = index
+      this.genChart()
+    },
+    // 绘制图表
+    genChart() {
+      // 1. 获取数据源
+      const mockData = [];
+      for (let i = 0; i < 10; i++) {
+        mockData.push(Math.floor(Math.random() * 100 + 200))
+      }
+      // 2. 获取图表对应的 DOM
+      const chartDOM = document.getElementById('content-chart')
+      // 3. 初始化图表
+      const chart = ECharts.init(chartDOM)
+      const options = {
+        xAxis: {
+          type: 'category',
+          show: false
+        },
+        yAxis: {
+          min: 0,
+          max: 350,
+          show: false
+        },
+        series: [{
+          data: mockData,
+          type: 'line',
+          smooth: true,
+          areaStyle: {
+            color: 'rgba(75, 193, 252, .5)'
+          },
+          lineStyle: {
+            width: 4,
+            color: 'rgba(75, 193, 252, 1)'
+          },
+          itemStyle: {
+            color: 'rgba(75, 193, 252, 1)',
+            borderWidth: 8
+          }
+        }],
+        grid: {
+          top: 0,
+          bottom: 0,
+          left: -20,
+          right: -20
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#6a7985'
+            }
+          }
+        }
+      }
+
+      // 4. 渲染图表
+      chart.setOption(options)
     }
+  },
+  mounted() {
+    // 获取图表
+    this.genChart()
+    setInterval(() => {
+      let index = this.selectedIndex;
+      index++
+      if(index >= this.circle.length) {
+        index = 0
+      }
+      this.change(index)
+    }, 3000)
   }
 }
 </script>
@@ -101,6 +173,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: 10px;
       .circle {
         width: 10px;
         height: 10px;
